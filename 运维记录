@@ -1,0 +1,65 @@
+
+1、git安装
+yum groupinstall "Development tools" -y
+yum install gettext-devel openssl-devel perl-CPAN perl-devel zlib-devel curl-devel -y
+wget https://www.kernel.org/pub/software/scm/git/git-2.14.1.tar.gz
+tar -zxf git-2.14.1.tar.gz
+cd git-2.14.1
+./configure
+make && make install
+
+
+2、保留脚本可执行权限推送到git
+git update-index --chmod=+x *.sh
+
+
+
+3、用sshpass方式实现免密码登录
+sshpass -p '123qwe!@#' ssh-copy-id 192.168.11.51
+
+
+
+
+4、nexus在centos7上面作为系统服务配置
+vim /etc/systemd/system/nexus.service
+[Unit]
+Description=nexus service
+After=network.target
+  
+[Service]
+Type=forking
+LimitNOFILE=65536
+ExecStart=/app/nexus-3.11.0-01/bin/nexus start
+ExecStop=/app/nexus-3.11.0-01/bin/nexus stop
+User=nexus
+Restart=on-abort
+  
+[Install]
+WantedBy=multi-user.target
+
+
+
+
+
+systemctl daemon-reload
+systemctl enable nexus.service
+systemctl start nexus.service
+
+5、利用stdin设置密码
+echo "hemei"|passwd --stdin hemei
+
+6、查找某目录下占用空间最大的前十个文件
+du -hsx * | sort -rh | head -10
+
+7、释放内存
+echo 1 > /proc/sys/vm/drop_caches
+echo 3 > /proc/sys/vm/drop_caches
+
+8、生产环境时钟同步
+0 23 * * *  /usr/sbin/ntpdate  192.168.10.125;/usr/sbin/hwclock -w ;date >> /root/times.log 2>&1
+
+9、批量删除已经退出的容器
+docker ps -a|grep Exited|awk '{print $1}'|while read x;do docker rm $x;done
+
+10、批量删除docker镜像，以risk为例
+docker images|grep risk|while read x;do img=`echo $x|awk '{print $1}'`;version=`echo $x|awk '{print $2}'`;docker rmi $img:$version -f;done
