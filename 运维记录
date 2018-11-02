@@ -8,17 +8,11 @@ cd git-2.14.1
 ./configure
 make && make install
 
-
 2、保留脚本可执行权限推送到git
 git update-index --chmod=+x *.sh
 
-
-
 3、用sshpass方式实现免密码登录
 sshpass -p '123qwe!@#' ssh-copy-id 192.168.11.51
-
-
-
 
 4、nexus在centos7上面作为系统服务配置
 vim /etc/systemd/system/nexus.service
@@ -63,3 +57,9 @@ docker ps -a|grep Exited|awk '{print $1}'|while read x;do docker rm $x;done
 
 10、批量删除docker镜像，以risk为例
 docker images|grep risk|while read x;do img=`echo $x|awk '{print $1}'`;version=`echo $x|awk '{print $2}'`;docker rmi $img:$version -f;done
+
+11、相关资料
+1）https://www.bookstack.cn/read/kubernetes-handbook/practice-kubectl-installation.md
+2）https://www.cnblogs.com/yangjig/p/6014198.html
+3）https://blog.csdn.net/david_dai_1108/article/details/70478826
+4）https://o-my-chenjian.com/2018/01/27/Deploy-Prometheus-And-Grafana-On-Kubernetes/
