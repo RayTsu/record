@@ -1,0 +1,47 @@
+export ETCDCTL_CA_FILE=/etc/kubernetes/ssl/ca.pem
+export ETCDCTL_CERT_FILE=/etc/kubernetes/ssl/kubernetes.pem
+export ETCDCTL_KEY_FILE=/etc/kubernetes/ssl/kubernetes-key.pem
+
+
+1、创建secret
+kubectl create secret docker-registry myregistrykey --docker-server=192.168.11.53:8082 --docker-username=admin --docker-password=admin123 --docker-email=hemeiloan@docker.com -n kube-system
+2、为serviceaccount绑定secret
+kubectl patch serviceaccount dashboard -p '{"imagePullSecrets": [{"name": "myregistrykey"}]}' -n kube-system
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+kubectl create secret docker-registry myregistrykey --docker-server=192.168.11.53:8082 --docker-username=admin --docker-password=admin123 --docker-email=hemeiloan@docker.com -n sit
+绑定默认账户
+kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "myregistrykey"}]}' -n sit
+
+
+kubectl scale deployment/lbpm-portal --replicas 2
+
+
+kubectl label nodes 192.168.11.55 node=redis
+kubectl label nodes kube-node node=kube-node
+kubectl get node -a -l "node=kube-node"
+kubectl exec nginx-prod-5d69986f95-rmngn -n prod -- nginx -t
+kubectl create configmap nginx-default-conf --from-file=default.conf -n prod
+kubectl rollout status deployments nginx-ingress-controller -n prod
+kubectl get componentstatuses
+
+kubectl set image deployment/eloan-test eloan-test=192.168.11.53:8082/eloan-test:T2 -n prod --record     --记录Deployment revision 
+kubectl rollout history deploy/lbpm-portal-prod -n prod      --查看滚动升级记录
+kubectl rollout status deploy/eloan-test -n prod      --查看滚动升级状态
+kubectl rollout undo deployment/eloan-test --to-revision=8 -n prod      --回退版本
+
+遇到pod处于一直  Terminating状态删不掉可以从数据库删除
+比如：etcdctl del /registry/pods/sit/mysql-7b498fb64-5xl7g
+
+查看容器实时日志
+http://192.168.11.54:8080/api/v1/namespaces/sit/pods/lbpm-portal-84c89fcb5d-7gkb4/log?container=lbpm-portal&pretty=true&follow=true
+
+强制删除：（出现的场景；pod所在的node节点因为docker和kubelet重启从而导致该pod被迫重启，这个时候用scale扩展deployment副本时该pod会一直处于Terminating状态）
+kubectl delete pods eloan-dev-6595c4cc44-mtgpm --grace-period 0 --force
+
+使用环境变量定义api版本
+export ETCDCTL_API=3
+etcd有目录结构类似linux文件系统，获取所有key看一看：
+etcdctl get / --prefix --keys-only
