@@ -1,0 +1,45 @@
+//并行
+pipeline {
+    agent any
+    stages {
+        stage('Pull Code'){
+            steps{
+                git credentialsId: 'd3bd1067-c7f4-4f45-96e4-fe7c64999746', url: 'http://192.168.10.166/xulei/ops.git'
+            }
+        }
+        stage('Parallel Stage') {
+            parallel {
+                stage('Ansible_Ping') {
+                    agent {
+                        label "Ansible"
+                    }
+                    steps {
+					    sh 'ansible all -i hosts-test -m ping'
+                    }
+                }
+                stage('Ansible_LS') {
+                    agent {
+                        label "Ansible"
+                    }
+                    steps {
+					    sh 'ansible all -i hosts-test -m shell -a "ls -al"'
+                    }
+                }
+            }
+        }
+    }
+}
+
+//串行
+node('Ansible') {
+    
+    stage('Ansible_Ping') { //定义 "Ansible_Ping" stage
+	  git credentialsId: 'd3bd1067-c7f4-4f45-96e4-fe7c64999746', url: 'http://192.168.10.166/xulei/ops.git'
+      sh 'ansible all -i hosts-test -m ping'
+    }
+    stage('Ansible_LS') { //定义 "Ansible_Ping" stage
+      sh 'ansible all -i hosts-test -m shell -a "ls -al"'
+    }
+
+}
+
