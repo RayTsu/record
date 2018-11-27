@@ -1,0 +1,49 @@
+node {
+   def mvnHome
+   stage('Preparation') { // for display purposes
+      // Get some code from a GitHub repository
+      git credentialsId: 'd3bd1067-c7f4-4f45-96e4-fe7c64999746', url: 'http://192.168.10.166/root/LBPM.git'
+      // Get the Maven tool.
+      // ** NOTE: This 'M3' Maven tool must be configured
+      // **       in the global configuration.           
+      mvnHome = tool 'maven'
+   }
+   stage('Build') {
+      // Run the maven build
+      if (isUnix()) {
+         sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+      } else {
+         bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+      }
+   }
+   stage('pwd'){
+       sh "pwd"
+   }
+   stage('Results') {
+     // junit 'lbpm-portal/target/surefire-reports/TEST-*.xml'
+      //archive 'target/*.jar'
+      archiveArtifacts artifacts: 'lbpm-portal/target/*.jar', fingerprint: true
+   }
+   stage('Deploy-Test'){
+   
+   }
+}
+
+node {
+  def remote = [:]
+  remote.name = 'root'
+  remote.host = '192.168.11.51'
+  remote.user = 'root'
+  remote.password = '123qwe!@#'
+  remote.allowAnyHosts = true
+  stage('Deploy-Artifact'){
+    sshPut remote: remote, from: 'lbpm-portal/target/lbpm-portal.jar', into: '/app'
+  }
+  stage('Execute-Script'){
+    sshCommand remote: remote, command: "/app/docker_nouse_img_clean.sh"  
+    sshScript remote: remote, script: "test.sh"
+  }
+  stage('Get-File'){
+    sshGet remote: remote, from: '/app/docker_nouse_img_clean.sh', into: './aa.sh', override: true
+  }
+}
