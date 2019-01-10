@@ -45,3 +45,5 @@ kubectl delete pods eloan-dev-6595c4cc44-mtgpm --grace-period 0 --force
 export ETCDCTL_API=3
 etcd有目录结构类似linux文件系统，获取所有key看一看：
 etcdctl get / --prefix --keys-only
+给k8s机器打上master/node标签
+kubectl label node xx.xx.xx.xx kubernetes.io/role=master/node --overwrite
