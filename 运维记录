@@ -67,3 +67,6 @@ docker images|grep risk|while read x;do img=`echo $x|awk '{print $1}'`;version=`
 
 12、ssh-steps-plugin
 https://github.com/jenkinsci/ssh-steps-plugin
+
+13、7天以前
+date -d '(date +%Y%m%d) -7 days' +%Y-%m-%d
