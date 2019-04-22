@@ -64,6 +64,7 @@ docker images|grep risk|while read x;do img=`echo $x|awk '{print $1}'`;version=`
 3）https://blog.csdn.net/david_dai_1108/article/details/70478826 ----linux输出带颜色内容
 4）https://o-my-chenjian.com/2018/01/27/Deploy-Prometheus-And-Grafana-On-Kubernetes/ ----k8s部署prometheus
 5）https://www.cnblogs.com/menkeyi/p/7134460.html ----k8s基本概念，值得一看
+6) https://es.xiaoleilu.com/010_Intro/00_README.html
 
 12、ssh-steps-plugin
 https://github.com/jenkinsci/ssh-steps-plugin
