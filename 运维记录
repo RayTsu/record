@@ -74,6 +74,6 @@ date -d '(date +%Y%m%d) -7 days' +%Y-%m-%d
 
 14、sed
 ansible all -i '10.88.6.76,' -m shell -a 'host=`hostname`;sed -i "s/POSERCN/$host/" /etc/hosts' -b
-sed  -i "s/^nohup.*$/& 2>\&1 \&/"  start.sh --------在指定行后面增加
-sed -i "/^nohup.*$/s//& 2>\&1 \&/"  start.sh --------在指定行后面增加
+sed  -i "s/^nohup.*$/& 2>\&1 \&/"  start.sh --------在指定字符后面增加
+sed -i "/^nohup.*$/s//& 2>\&1 \&/"  start.sh --------在指定字符后面增加
 sed  "s/\&/2>\&1 \&/"  start.sh --------替换匹配到的字符
