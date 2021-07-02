@@ -77,3 +77,8 @@ ansible all -i '10.88.6.76,' -m shell -a 'host=`hostname`;sed -i "s/POSERCN/$hos
 sed  -i "s/^nohup.*$/& 2>\&1 \&/"  start.sh --------在指定字符后面增加
 sed -i "/^nohup.*$/s//& 2>\&1 \&/"  start.sh --------在指定字符后面增加
 sed  "s/\&/2>\&1 \&/"  start.sh --------替换匹配到的字符
+
+15、expect
+http://xstarcd.github.io/wiki/shell/expect.html
+https://segmentfault.com/a/1190000012194543
+https://blog.51cto.com/alwaysyunwei/1284284
